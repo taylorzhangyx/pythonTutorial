@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# Copyright 2009-2017 BHG http://bw.org/
 
 def main():
     for i in inclusive_range(1,44,3):
@@ -22,7 +21,7 @@ def inclusive_range(*args):
         (start, stop, step) = args
     else: raise TypeError(f'expected at most 3 arguments, got {numargs}')
 
-    # generator
+    # generator -> more like the iterator, hasNext() next()
     i = start
     while i <= stop:
         yield i
