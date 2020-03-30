@@ -64,7 +64,7 @@ class numwords():
             self._number = n
         return str(self._number);
 
-class saytimedidie(numwords):
+class saytime(numwords):
     '''
         return the time (from two parameters) as words,
         e.g., fourteen til noon, quarter past one, etc.
@@ -125,7 +125,7 @@ class saytimedidie(numwords):
         'return the traditionl time, e.g., 13:42'
         return f'{self._hour:02}:{self._min:02}'
 
-class saytime_t(saytimedidie):   # wrapper for saytime to use time object
+class saytime_t(saytime):   # wrapper for saytime to use time object
     '''
         set the time from a time object
     '''
@@ -137,13 +137,13 @@ def main():
         if sys.argv[1] == 'test':
             test()
         else:
-            try: print(saytimedidie(*(sys.argv[1].split(':'))).words())
+            try: print(saytime(*(sys.argv[1].split(':'))).words())
             except TypeError: print('Invalid time ({})'.format(sys.argv[1]))
     else:
         print(saytime_t().words())
 
 def test():
-    st = saytimedidie()
+    st = saytime()
     print('\nnumbers test:')
     list = (
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 19, 20, 30,
