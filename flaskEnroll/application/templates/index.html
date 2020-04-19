@@ -1,18 +1,16 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-<div class="container">
     <div class="row">
         <div class="col-md-12 text-center">
             <h1>Welcome to Universal Tech Academy.</h1>
-            <h3>Let's get started.</h3>
+
             {% if login %}
-            <p>Welcome!</p>
+            <h3>Let's get started.</h3>
             {% else %}
-            <p>Already registered? <a href="{{url_for('login')}}">Login</a></p>
+            <p>Already registered? <a href="{{url_for('login') }}">Login</a></p>
             {% endif %}
+
         </div>
     </div>
-</div>
 {% endblock %}
