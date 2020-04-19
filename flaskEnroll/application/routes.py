@@ -1,28 +1,62 @@
 from application import app
-from flask import render_template
+from flask import render_template, request
 
 
-user = {}
-user["login"] = False
-user["language"] = 'eng'
-
-
-@app.route('/', methods=['GET'])
-@app.route('/index', methods=['GET'])
+@app.route("/", methods=["GET"])
+@app.route("/index", methods=["GET"])
+@app.route("/home", methods=["GET"])
 def index():
-    return render_template('index.html', **user)
+    return render_template("index.html", index=True)
 
 
-@app.route('/classes', methods=['GET'])
-def classes():
-    return render_template('classes.html', login=True)
+@app.route("/courses", methods=["GET"])
+def courses():
+    courseData = [
+        {
+            "courseID": "1111",
+            "title": "PHP 111",
+            "description": "Intro to PHP",
+            "credits": "3",
+            "term": "Fall, Spring",
+        },
+        {
+            "courseID": "2222",
+            "title": "Java 1",
+            "description": "Intro to Java Programming",
+            "credits": "4",
+            "term": "Spring",
+        },
+        {
+            "courseID": "3333",
+            "title": "Adv PHP 201",
+            "description": "Advanced PHP Programming",
+            "credits": "3",
+            "term": "Fall",
+        },
+        {
+            "courseID": "4444",
+            "title": "Angular 1",
+            "description": "Intro to Angular",
+            "credits": "3",
+            "term": "Fall, Spring",
+        },
+        {
+            "courseID": "5555",
+            "title": "Java 2",
+            "description": "Advanced Java Programming",
+            "credits": "4",
+            "term": "Fall",
+        },
+    ]
+
+    return render_template("courses.html", courseData=courseData, courses=True)
 
 
-@app.route('/register', methods=['GET'])
+@app.route("/register", methods=["GET"])
 def register():
-    return render_template('register.html', login=True)
+    return render_template("register.html", register=True)
 
 
-@app.route('/login', methods=['GET'])
+@app.route("/login", methods=["GET"])
 def login():
-    return render_template('login.html', login=True)
+    return render_template("login.html", login=True)
