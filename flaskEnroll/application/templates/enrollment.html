@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1>Course Details</h1>
+
+        <p>Course: {{ course.courseId }}</p>
+        <p>Title: {{ course.title }}</p>
+        <p>Term: {{ course.term }}</p>
+
+        {% if enrollment %}
+        <h3>You are enrolled!</h3>
+        {% else %}
+        <p>Choose a couse to enroll? <a href="{{url_for('courses') }}">Courses</a></p>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
