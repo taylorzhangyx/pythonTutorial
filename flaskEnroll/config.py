@@ -1,5 +1,7 @@
 import os
 
 
-class config():
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'secret_key'
+class Config:
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "secret_key"
+
+    MONGODB_SETTINGS = {"db": "flask_enrollment"}
