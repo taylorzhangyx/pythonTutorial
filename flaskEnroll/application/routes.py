@@ -2,7 +2,8 @@ from application import app, db
 from application.modules.user import User
 from application.modules.course import Course
 from application.modules.enrollment import Enrollment
-from flask import render_template, request, Response, json
+from flask import render_template, request, Response, json, redirect, flash
+from application.forms import LoginForm, RegisterForm
 
 # courseData = [
 #     {
@@ -64,9 +65,17 @@ def register():
     return render_template("register.html", register=True)
 
 
-@app.route("/login", methods=["GET"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html", login=True)
+    print(request.form)
+    form = LoginForm()
+    if form.validate_on_submit():
+        if request.form.get("email") == "test@test.com":
+            flash("good login", "success")
+            return redirect("/index")
+        else:
+            flash("something went wrong.", "danger")
+    return render_template("login.html", title="Login", form=form, login=True)
 
 
 @app.route("/enrollment", methods=["POST"])
