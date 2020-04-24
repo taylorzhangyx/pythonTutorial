@@ -4,6 +4,7 @@ from application.modules.course import Course
 from application.modules.enrollment import Enrollment
 from flask import render_template, request, Response, json, redirect, flash
 from application.forms import LoginForm, RegisterForm
+from application.login import verify_identity
 
 # courseData = [
 #     {
@@ -62,15 +63,20 @@ def courses(term="spring 2020"):
 
 @app.route("/register", methods=["GET"])
 def register():
-    return render_template("register.html", register=True)
+    form = RegisterForm()
+    return (
+        render_template("register.html", register=True, title="Register", form=form),
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    print(request.form)
+    print(f"login {request.method} {request.form}")
     form = LoginForm()
+    email = form.email.data
+    password = form.password.data
     if form.validate_on_submit():
-        if request.form.get("email") == "test@test.com":
+        if verify_identity(email=email, password=password):
             flash("good login", "success")
             return redirect("/index")
         else:
