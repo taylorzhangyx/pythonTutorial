@@ -18,7 +18,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField(
         "Password", validators=[DataRequired(), Length(min=6, max=24)]
     )
-    passwordConfirm = StringField(
+    passwordConfirm = PasswordField(
         "Confirm Password", validators=[DataRequired(), EqualTo("password")]
     )
     firstName = StringField("First Name", validators=[DataRequired()])
@@ -27,7 +27,6 @@ class RegisterForm(FlaskForm):
 
     # https://wtforms.readthedocs.io/en/latest/forms/#in-line-validators
     def validate_email(self, email):
-        user = User.objects.get(email=email.data).first()
+        user = User.objects(email=email.data).first()
         if user:
             raise ValidationError("Email exists already. Please try another one.")
-

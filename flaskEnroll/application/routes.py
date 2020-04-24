@@ -2,7 +2,7 @@ from application import app, db
 from application.modules.user import User
 from application.modules.course import Course
 from application.modules.enrollment import Enrollment
-from flask import render_template, request, Response, json, redirect, flash
+from flask import render_template, request, Response, json, redirect, flash, url_for
 from application.forms import LoginForm, RegisterForm
 from application.login import verify_identity
 
@@ -61,21 +61,35 @@ def courses(term="spring 2020"):
     )
 
 
-@app.route("/register", methods=["GET"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
+    print(f"request {request.method} {request.form}")
     form = RegisterForm()
-    return (
-        render_template("register.html", register=True, title="Register", form=form),
-    )
+    print(f"request2 {request.method} {request.form}")
+    if form.validate_on_submit():
+        print(f"request3 {request.method} {request.form}")
+        # user_id = User.objects.count() + 1
+        email = form.email.data
+        password = form.password.data
+        firstName = form.firstName.data
+        lastName = form.lastName.data
+
+        user = User(userId=122, firstName=firstName, email=email, lastName=lastName)
+        user.set_password(password)
+        user.save()
+        flash("User is successfully registered!", "success")
+        print("User is successfully registered")
+        return redirect(url_for("index"))
+    return render_template("register.html", register=True, title="Register", form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     print(f"login {request.method} {request.form}")
     form = LoginForm()
-    email = form.email.data
-    password = form.password.data
     if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
         if verify_identity(email=email, password=password):
             flash("good login", "success")
             return redirect("/index")

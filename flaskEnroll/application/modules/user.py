@@ -9,10 +9,14 @@ class User(db.Document):
     password = db.StringField()
     email = db.StringField(unique=True)
 
-    def get_password(self, password):
-        print("password getter is called!")
-        self.password = check_password_hash(password)
+    # def get_password(self, password):
+    #     print("password getter is called!")
+    #     self.password = check_password_hash(password)
 
     def check_password(self, password):
         print("password validator is called!")
+        return check_password_hash(self.password, password)
+
+    def set_password(self, password):
+        print("password setter is called!")
         self.password = generate_password_hash(password)
