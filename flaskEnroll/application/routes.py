@@ -5,44 +5,7 @@ from application.modules.enrollment import Enrollment
 from flask import render_template, request, Response, json, redirect, flash, url_for
 from application.forms import LoginForm, RegisterForm
 from application.login import verify_identity
-
-# courseData = [
-#     {
-#         "courseID": "1111",
-#         "title": "PHP 111",
-#         "description": "Intro to PHP",
-#         "credits": "3",
-#         "term": "Fall, Spring",
-#     },
-#     {
-#         "courseID": "2222",
-#         "title": "Java 1",
-#         "description": "Intro to Java Programming",
-#         "credits": "4",
-#         "term": "Spring",
-#     },
-#     {
-#         "courseID": "3333",
-#         "title": "Adv PHP 201",
-#         "description": "Advanced PHP Programming",
-#         "credits": "3",
-#         "term": "Fall",
-#     },
-#     {
-#         "courseID": "4444",
-#         "title": "Angular 1",
-#         "description": "Intro to Angular",
-#         "credits": "3",
-#         "term": "Fall, Spring",
-#     },
-#     {
-#         "courseID": "5555",
-#         "title": "Java 2",
-#         "description": "Advanced Java Programming",
-#         "credits": "4",
-#         "term": "Fall",
-#     },
-# ]
+from application.enrollment import enrollment_query
 
 
 @app.route("/", methods=["GET"])
@@ -55,7 +18,7 @@ def index():
 @app.route("/courses/<term>", methods=["GET"])
 @app.route("/courses", methods=["GET"])
 def courses(term="spring 2020"):
-    courseData = Course.objects.all()
+    courseData = Course.objects.order_by("-courseId")
     return render_template(
         "courses.html", term=term, courseData=courseData, courses=True
     )
@@ -68,13 +31,13 @@ def register():
     print(f"request2 {request.method} {request.form}")
     if form.validate_on_submit():
         print(f"request3 {request.method} {request.form}")
-        # user_id = User.objects.count() + 1
+        user_id = User.objects.count() + 1
         email = form.email.data
         password = form.password.data
         firstName = form.firstName.data
         lastName = form.lastName.data
 
-        user = User(userId=122, firstName=firstName, email=email, lastName=lastName)
+        user = User(userId=user_id, firstName=firstName, email=email, lastName=lastName)
         user.set_password(password)
         user.save()
         flash("User is successfully registered!", "success")
@@ -98,16 +61,25 @@ def login():
     return render_template("login.html", title="Login", form=form, login=True)
 
 
-@app.route("/enrollment", methods=["POST"])
+@app.route("/enrollment", methods=["POST", "GET"])
 def enrollment():
-    courseId = request.form.get("courseId")
-    title = request.form.get("title")
-    term = request.form.get("term")
-    print(request.form)
+    userId = 1
+    course = None
+    if request.method == "POST":
+        courseId = request.form.get("courseId")
+        title = request.form.get("title")
+        term = request.form.get("term")
+        course = {"courseId": courseId, "title": title, "term": term}
+
+        Enrollment(courseId=courseId, userId=userId).save()
+
+    enrolledCourses = User.objects.aggregate(enrollment_query(userId))
+    print(f"enrolled courses #: {enrolledCourses}")
     return render_template(
         "enrollment.html",
+        course=course,
+        enrolledCourses=enrolledCourses,
         enrollment=True,
-        course={"courseId": courseId, "title": title, "term": term},
     )
 
 
@@ -125,24 +97,4 @@ def api(idx=None):
 @app.route("/users")
 def users():
     userData = User.objects.all()
-    if userData.count() == 0:
-        firstnames = [
-            "John",
-            "Jane",
-            "Adam",
-            "Kevin",
-            "Ryan",
-            "Cindy",
-            "George",
-            "James",
-            "Paul",
-        ]
-        for i in range(1, len(firstnames)):
-            User(
-                userId=str(i),
-                firstName=firstnames[i],
-                password="1234qwer",
-                email=f"{firstnames[i]}@test.com",
-            ).save()
-        userData = User.objects.all()
     return render_template("users.html", userData=userData, users=True)

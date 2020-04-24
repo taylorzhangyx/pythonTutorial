@@ -6,15 +6,39 @@
     <div class="col-md-12 text-center">
         <h1>Course Details</h1>
 
+        {% if course %}
+        <h3>You are enrolled!</h3>
         <p>Course: {{ course.courseId }}</p>
         <p>Title: {{ course.title }}</p>
         <p>Term: {{ course.term }}</p>
 
-        {% if enrollment %}
-        <h3>You are enrolled!</h3>
         {% else %}
         <p>Choose a couse to enroll? <a href="{{url_for('courses') }}">Courses</a></p>
         {% endif %}
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Course ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Credits</th>
+                    <th scope="col">Term</th>
+                    <th scope="col">Enroll</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrolledCourse in enrolledCourses %}
+                <tr>
+                    <td scope='row'>{{enrolledCourse.course.courseId}}</td>
+                    <td>{{enrolledCourse.course.title}}</td>
+                    <td>{{enrolledCourse.course.description}}</td>
+                    <td>{{enrolledCourse.course.credits}}</td>
+                    <td>{{enrolledCourse.course.term}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     </div>
 </div>
