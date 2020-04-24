@@ -94,3 +94,7 @@ footer {
 .btn-submit:hover {
     opacity: 1;
 }
+
+.error-msg {
+    color: red;
+}
